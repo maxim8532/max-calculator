@@ -4,7 +4,8 @@ from math import pow
 
 class BinaryOperator(Operator):
     """
-        A class providing static methods for binary mathematical operations.
+        A class that extends the Operator class.
+        provides static methods for binary mathematical operations.
 
         :type methods: staticmethod
 

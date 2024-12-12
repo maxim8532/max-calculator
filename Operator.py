@@ -6,9 +6,11 @@ class Operator(ABC):
     An abstract class with an attribute of an operation priorities dictionary
 
     Attributes:
-        operator_priorities_dict: A priorities dictionary for mathematical operations
+        operator_priorities_dict: A priorities dictionary for mathematical operations.
+        Operators with a higher priority value will be used first.
     """
-    operator_priorities_dict = {"+": 1,
+    operator_priorities_dict = {
+                                "+": 1,
                                 "-": 1,
                                 "*": 2,
                                 "/": 2,
@@ -19,4 +21,5 @@ class Operator(ABC):
                                 "&": 6,
                                 "@": 6,
                                 "~": 7,
-                                "!": 7}
+                                "!": 7
+    }
