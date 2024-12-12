@@ -10,16 +10,17 @@ class Operator(ABC):
         Operators with a higher priority value will be used first.
     """
     operator_priorities_dict = {
-                                "+": 1,
-                                "-": 1,
-                                "*": 2,
-                                "/": 2,
-                                "u": 3,
-                                "^": 4,
-                                "%": 5,
-                                "$": 6,
-                                "&": 6,
-                                "@": 6,
-                                "~": 7,
-                                "!": 7
+        "+": 1,  # plus
+        "-": 1,  # minus
+        "*": 2,  # multiply
+        "/": 2,  # divide
+        "u": 3,  # This operator represents a unary minus
+        "^": 4,  # power
+        "%": 5,  # modulo
+        "$": 6,  # max
+        "&": 6,  # min
+        "@": 6,  # avg
+        "~": 7,  # negative
+        "!": 7,  # factorial
+        "#": 7  # hashtag
     }

@@ -12,6 +12,7 @@ class UnaryOperator(Operator):
         negative(operand): Perform negation operation
         factorial(operand): Perform factorial operation
     """
+
     @staticmethod
     def negative(operand):
         return -operand
@@ -32,3 +33,22 @@ class UnaryOperator(Operator):
         for number in range(1, operand + 1):
             factorial_sum *= number
         return factorial_sum
+
+    @staticmethod
+    def hashtag(operand):
+        """
+        Calculates the sum of the digits of a given operand
+        :param operand:  A given operand
+        :type operand: int, float
+        :return: the sum of the operand's digits
+        :rtype: int
+        """
+        # Handle float operands
+        operand = int(str(operand).replace(".", ""))
+        if operand < 0:
+            raise ValueError("Hashtag is only defined for non-negative numbers")
+        hashtag_sum = 0
+        while operand != 0:
+            hashtag_sum += operand % 10
+            operand //= 10
+        return hashtag_sum
