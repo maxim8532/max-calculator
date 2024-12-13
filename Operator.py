@@ -1,26 +1,99 @@
 from abc import ABC
 
+from BinaryOperator import BinaryOperator
+from UnaryOperator import UnaryOperator
+
 
 class Operator(ABC):
     """
-    An abstract class with an attribute of an operation priorities dictionary
+    An abstract class with an attribute of an operation priorities dictionary where
+    every operator has its own dictionary which contains his essential attributes.
 
     Attributes:
-        operator_priorities_dict: A priorities dictionary for mathematical operations.
-        Operators with a higher priority value will be used first.
+        operators_dict: A dictionary for mathematical operations that contains attributes
+            like -  the type of the operation (binary or unary).
+            the priority of the operator (operators with a higher priority value will be used first).
+            the position of the operator compared to the operand/s.
+            and the operation which references a static method that executes the operation.
     """
-    operator_priorities_dict = {
-        "+": 1,  # plus
-        "-": 1,  # minus
-        "*": 2,  # multiply
-        "/": 2,  # divide
-        "u": 3,  # This operator represents a unary minus
-        "^": 4,  # power
-        "%": 5,  # modulo
-        "$": 6,  # max
-        "&": 6,  # min
-        "@": 6,  # avg
-        "~": 7,  # negative
-        "!": 7,  # factorial
-        "#": 7  # hashtag
+    operators_dict = {
+        "+": {
+            "type": "binary",
+            "priority": 1,
+            "position": "middle",
+            "operation": BinaryOperator.add
+        },  # plus
+        "-": {
+            "type": "binary",
+            "priority": 1,
+            "position": "middle",
+            "operation": BinaryOperator.subtract
+        },  # minus
+        "*": {
+            "type": "binary",
+            "priority": 2,
+            "position": "middle",
+            "operation": BinaryOperator.multiply
+        },  # multiply
+        "/": {
+            "type": "binary",
+            "priority": 2,
+            "position": "middle",
+            "operation": BinaryOperator.divide
+        },  # divide
+        "u": {
+            "type": "unary",
+            "priority": 3,
+            "position": "left",
+            "operation": UnaryOperator.negative
+        },  # unary minus
+        "^": {
+            "type": "binary",
+            "priority": 4,
+            "position": "middle",
+            "operation": BinaryOperator.power
+        },  # power
+        "%": {
+            "type": "binary",
+            "priority": 5,
+            "position": "middle",
+            "operation": BinaryOperator.modulo
+        },  # modulo
+        "$": {
+            "type": "binary",
+            "priority": 6,
+            "position": "middle",
+            "operation": BinaryOperator.max
+        },  # max
+        "&": {
+            "type": "binary",
+            "priority": 6,
+            "position": "middle",
+            "operation": BinaryOperator.min
+        },  # min
+        "@": {
+            "type": "binary",
+            "priority": 6,
+            "position": "middle",
+            "operation": BinaryOperator.avg
+        },  # avg
+        "~": {
+            "type": "unary",
+            "priority": 7,
+            "position": "left",
+            "operation": UnaryOperator.negative
+        },  # negation
+        "!": {
+            "type": "unary",
+            "priority": 7,
+            "position": "right",
+            "operation": UnaryOperator.factorial
+        },  # factorial
+        "#": {
+            "type": "unary",
+            "priority": 7,
+            "position": "right",
+            "operation": UnaryOperator.hashtag
+        }  # hashtag
     }
+
