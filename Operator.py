@@ -97,3 +97,6 @@ class Operator(ABC):
         }  # hashtag
     }
 
+    @staticmethod
+    def get_operator_data(operator):
+        return Operator.operators_dict.get(operator)
