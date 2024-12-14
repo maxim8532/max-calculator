@@ -10,8 +10,8 @@ class Operator(ABC):
     every operator has its own dictionary which contains his essential attributes.
 
     Attributes:
-        operators_dict: A dictionary for mathematical operations that contains attributes
-            like -  the type of the operation (binary or unary).
+        operators_dict: A dictionary for mathematical operations that contains attributes -
+            the type of the operation (binary or unary).
             the priority of the operator (operators with a higher priority value will be used first).
             the position of the operator compared to the operand/s.
             and the operation which references a static method that executes the operation.
@@ -96,6 +96,17 @@ class Operator(ABC):
             "operation": UnaryOperator.hashtag
         }  # hashtag
     }
+
+    @staticmethod
+    def is_valid_operator(operator):
+        """
+        Check if a given operator is valid (exists in the dictionary).
+        :param operator: A given operator
+        :type operator: str
+        :return: True if valid, False otherwise
+        :rtype: bool
+        """
+        return operator in Operator.operators_dict
 
     @staticmethod
     def get_operator_data(operator):
