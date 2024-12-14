@@ -1,7 +1,7 @@
 from abc import ABC
 
-from BinaryOperator import BinaryOperator
-from UnaryOperator import UnaryOperator
+from binary_operator import BinaryOperator
+from unary_operator import UnaryOperator
 
 
 class Operator(ABC):

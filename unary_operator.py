@@ -1,9 +1,6 @@
-import Operator
 
-
-class UnaryOperator(Operator):
+class UnaryOperator:
     """
-    A class that extends the Operator abstract class.
     provides static methods for unary mathematical operations.
 
     :type methods: staticmethod

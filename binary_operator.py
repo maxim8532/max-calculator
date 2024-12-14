@@ -1,8 +1,7 @@
-import Operator
 from math import pow
 
 
-class BinaryOperator(Operator):
+class BinaryOperator:
     """
         A class that extends the Operator class.
         provides static methods for binary mathematical operations.
