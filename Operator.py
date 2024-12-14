@@ -99,4 +99,60 @@ class Operator(ABC):
 
     @staticmethod
     def get_operator_data(operator):
+        """
+        Retrieve data for a given operator from the operators' dictionary.
+        :param operator: A given operator
+        :type operator: str
+        :return: A sub-dictionary for the operator key
+        :rtype: dict
+
+        """
         return Operator.operators_dict.get(operator)
+
+    @staticmethod
+    def get_type(operator):
+        """
+        Retrieve the type of operator (unary or binary).
+        :param operator: A given operator
+        :type operator: str
+        :return: The type of the operator
+        :rtype: str
+        """
+        operator_data = Operator.get_operator_data(operator)
+        return operator_data["type"]
+
+    @staticmethod
+    def get_priority(operator):
+        """
+        Retrieve the priority of an operator.
+        :param operator: A given operator
+        :type operator: str
+        :return: The priority of an operator
+        :rtype: int
+        """
+        operator_data = Operator.get_operator_data(operator)
+        return operator_data["priority"]
+
+    @staticmethod
+    def get_position(operator):
+        """
+        Retrieve the position of an operator relative to the operand/s next to it
+        :param operator: A given operator
+        :type operator: str
+        :return: The position
+        :rtype: str
+        """
+        operator_data = Operator.get_operator_data(operator)
+        return operator_data["position"]
+
+    @staticmethod
+    def get_operation(operator):
+        """
+        Retrieve a reference to a method which the operator perform
+        :param operator: A given operator
+        :type operator: str
+        :return: The operation method
+        :rtype: Callable
+        """
+        operator_data = Operator.get_operator_data(operator)
+        return operator_data["operation"]
