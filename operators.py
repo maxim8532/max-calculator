@@ -109,6 +109,15 @@ class Operator(ABC):
         return operator in Operator.operators_dict
 
     @staticmethod
+    def get_operators_keys():
+        """
+        This method returns the operator's dictionary keys.
+        :return: The keys of the operator's dictionary
+        :rtype: dict_keys
+        """
+        return Operator.operators_dict.keys()
+
+    @staticmethod
     def get_operator_data(operator):
         """
         Retrieve data for a given operator from the operators' dictionary.
