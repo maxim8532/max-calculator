@@ -9,16 +9,31 @@ class Calculator:
         self._expression = expression
 
     def preprocessor(self):
+        """
+            Preprocesses the mathematical expression, gets it ready for the next step.
+
+            Steps:
+            1. Removes whitespaces.
+            2. Checks for invalid characters.
+            3. Reduces minus sequences.
+            4. Marks special minuses (unary and sign).
+
+            :return: The preprocessed expression.
+            :rtype: str
+            :raises InvalidCharacterException: If invalid characters are found.
+            """
         expression = self._expression
         try:
             expression = self._expression.replace(" ", "")  # Remove whitespaces
             expression = self.only_valid_characters_check(expression)
-            expression = self.reduce_minuses(expression)
-            expression = self.mark_special_minuses(expression)
+            # Check if the expression is valid, else raise an exception
+            expression = self.reduce_minuses(expression)  # Reduce the number of minuses
+            expression = self.mark_special_minuses(expression)  # Marks unary and sign minuses
             return expression
         except InvalidCharacterException as e:
             print(f"{e} \n\033[92mValid Characters:\033[0m numbers (Integer and decimal), brackets () and operators: "
                   f"{list(Operator.get_operators_keys())}")
+            # Prints the valid characters explanation in green
 
     @staticmethod
     def only_valid_characters_check(expression):
