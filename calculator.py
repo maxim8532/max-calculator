@@ -67,9 +67,10 @@ class Calculator:
                         current_token = ""  # Reset for next token
                 elif char == ".":
                     current_token += char
-                    if not next_char.isdecimal():
-                        token_list.append(float(current_token))
-                        current_token = ""
+                    if next_char:
+                        if not next_char.isdecimal():
+                            token_list.append(float(current_token))
+                            current_token = ""
                 elif char == "s":  # Handle sign minus
                     current_token += "-"
                 else:
