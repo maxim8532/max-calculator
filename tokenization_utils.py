@@ -10,6 +10,8 @@ def decimal_point_check(expression):
     :type expression: str
     :return: The expression with problematic decimal points highlighted.
     :rtype: str
+    :raise InvalidDecimalPointException: raises when a decimal point appears more than once in a number
+    and when it is by itself.
     """
     checked_expression = ""
     decimal_point_seen = False
