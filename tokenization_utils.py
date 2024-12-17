@@ -45,6 +45,9 @@ def decimal_point_check(expression):
             elif prev_char and next_char and not prev_char.isdecimal() and not next_char.isdecimal():
                 checked_expression += highlighted_point
                 stand_alone_point = True
+            else:
+                checked_expression += char
+                decimal_point_seen = True
         else:
             checked_expression += char
             decimal_point_seen = False  # Reset when encountering a non-decimal character
