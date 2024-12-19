@@ -57,10 +57,10 @@ def binary_operators_between_valid_operands_check(token_list):
         if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "binary":
             # Binary operators should be next to an expression, operand or a unary operator
             if ((next_token == "(" or isinstance(next_token, float) or
-                 operators.Operator.get_type(next_token) == "unary"
-            if operators.Operator.is_valid_operator(next_token) else False) and
+                 (next_token is not None and operators.Operator.get_type(next_token) == "unary"
+                 if operators.Operator.is_valid_operator(next_token) else False)) and
                     (prev_token == ")" or isinstance(prev_token, float) or
-                     (operators.Operator.get_type(prev_token) == "unary"
+                     (prev_token is not None and operators.Operator.get_type(prev_token) == "unary"
                      if operators.Operator.is_valid_operator(prev_token) else False))):
 
                 checked_expression += str(token)
@@ -117,6 +117,51 @@ def empty_parentheses_check(token_list):
     if "\033[91m" in string_expression:
         # If any token is highlighted, the check didn't pass
         return False, string_expression
+    else:
+        # Check passed
+        return True, None
+
+
+def stand_alone_unary_operators_check(token_list):
+    """
+    Checks for stand alone unary operators and highlights them.
+    :param token_list: The token list of the expression
+    :type token_list: list
+    :return: Tuple (check_passed, checked_expression)
+    :rtype: tuple
+    """
+    checked_expression = ""
+
+    for index, token in enumerate(token_list):
+        next_token = token_list[index + 1] if index + 1 < len(token_list) else None
+        prev_token = token_list[index - 1] if index > 0 else None
+
+        # Unary operators can be next to a number, an expression or another number, relative to their position
+        if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "unary":
+            if operators.Operator.get_position(token) == "right" and (  # Check if the position is "right"
+                    isinstance(prev_token, float)  # Check for float number next to it
+                    or prev_token == ")"  # Check for end of an expression next to it
+                    or (prev_token is not None and operators.Operator.get_type(prev_token) == "unary"
+                        if operators.Operator.is_valid_operator(prev_token) else False)):  # Check for unary operator
+
+                checked_expression += str(token)
+
+            elif operators.Operator.get_position(token) == "left" and (  # Check if the position is "left"
+                    isinstance(next_token, float)  # Check for float number next to it
+                    or next_token == "("  # Check for start of an expression next to it
+                    or (next_token is not None and operators.Operator.get_type(next_token) == "unary"
+                        if operators.Operator.is_valid_operator(next_token) else False)):  # Check for unary operator
+
+                checked_expression += str(token)
+
+            else:
+                checked_expression += f"\033[91m\033[1m{token}\033[0m"  # Highlight the problematic operator
+        else:
+            checked_expression += str(token)
+
+    if "\033[91m" in checked_expression:
+        # If any token is highlighted, the check didn't pass
+        return False, checked_expression
     else:
         # Check passed
         return True, None
