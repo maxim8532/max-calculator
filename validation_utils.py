@@ -67,10 +67,37 @@ def binary_operators_between_valid_operands_check(token_list):
             else:
                 checked_expression += f"\033[91m\033[1m{token}\033[0m"  # Highlights the char in red
         else:
-            checked_expression += str(token)
+            checked_expression += str(token)  # Adding a non-binary operator token
 
     if "\033[91m" in checked_expression:
         # Checks if there are any operators highlighted after the check.
         return False, checked_expression  # Did not pass the check, will return the expression with the problems in red
     else:
         return True, None  # Passed the check successfully
+
+
+def negation_operator_next_to_number_check(token_list):
+    """
+    Checks for "~" operators that are not next to a number to their right.
+    :param token_list: The token list of the expression
+    :type token_list: list
+    :return: Tuple (check_passed, checked_expression)
+    :rtype: tuple
+    """
+    checked_expression = ""
+
+    for index, token in enumerate(token_list):
+        next_token = token_list[index + 1] if index + 1 < len(token_list) else None
+
+        if token == "~" and not isinstance(next_token, float):
+            # Checks if the token next to the "~" is a float number
+            checked_expression += f"\033[91m\033[1m{token}\033[0m"
+        else:
+            checked_expression += str(token)
+
+    if "\033[91m" in checked_expression:
+        # If any token is highlighted, the check didn't pass
+        return False, checked_expression
+    else:
+        # Check passed
+        return True, None
