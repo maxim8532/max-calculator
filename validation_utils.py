@@ -54,9 +54,13 @@ def binary_operators_between_valid_operands_check(token_list):
         next_token = token_list[index + 1] if index + 1 < len(token_list) else None
         prev_token = token_list[index - 1] if index > 0 else None
 
-        if operators.Operator.is_valid_operator(token):
-            if ((next_token == "(" or isinstance(next_token, float)) and
-                    (prev_token == ")" or isinstance(prev_token, float))):
+        if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "binary":
+            # Binary operators should be next to an expression, operand or a unary operator
+            if ((next_token == "(" or isinstance(next_token, float) or
+                operators.Operator.get_type(next_token) == "unary") and
+                (prev_token == ")" or isinstance(prev_token, float) or
+                 (operators.Operator.get_type(prev_token) == "unary"))):
+
                 checked_expression += str(token)
             else:
                 checked_expression += f"\033[91m\033[1m{token}\033[0m"  # Highlights the char in red
