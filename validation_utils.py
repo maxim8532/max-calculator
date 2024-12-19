@@ -57,9 +57,11 @@ def binary_operators_between_valid_operands_check(token_list):
         if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "binary":
             # Binary operators should be next to an expression, operand or a unary operator
             if ((next_token == "(" or isinstance(next_token, float) or
-                operators.Operator.get_type(next_token) == "unary") and
+                operators.Operator.get_type(next_token) == "unary"
+                if operators.Operator.is_valid_operator(next_token) else False) and
                 (prev_token == ")" or isinstance(prev_token, float) or
-                 (operators.Operator.get_type(prev_token) == "unary"))):
+                 (operators.Operator.get_type(prev_token) == "unary"
+                 if operators.Operator.is_valid_operator(prev_token) else False))):
 
                 checked_expression += str(token)
             else:
