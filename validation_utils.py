@@ -57,11 +57,11 @@ def binary_operators_between_valid_operands_check(token_list):
         if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "binary":
             # Binary operators should be next to an expression, operand or a unary operator
             if ((next_token == "(" or isinstance(next_token, float) or
-                operators.Operator.get_type(next_token) == "unary"
-                if operators.Operator.is_valid_operator(next_token) else False) and
-                (prev_token == ")" or isinstance(prev_token, float) or
-                 (operators.Operator.get_type(prev_token) == "unary"
-                 if operators.Operator.is_valid_operator(prev_token) else False))):
+                 operators.Operator.get_type(next_token) == "unary"
+            if operators.Operator.is_valid_operator(next_token) else False) and
+                    (prev_token == ")" or isinstance(prev_token, float) or
+                     (operators.Operator.get_type(prev_token) == "unary"
+                     if operators.Operator.is_valid_operator(prev_token) else False))):
 
                 checked_expression += str(token)
             else:
@@ -98,6 +98,25 @@ def negation_operator_next_to_number_check(token_list):
     if "\033[91m" in checked_expression:
         # If any token is highlighted, the check didn't pass
         return False, checked_expression
+    else:
+        # Check passed
+        return True, None
+
+
+def empty_parentheses_check(token_list):
+    """
+    Checks for empty parentheses and highlights them.
+    :param token_list: The token list of the expression
+    :type token_list: list
+    :return: Tuple (check_passed, checked_expression)
+    :rtype: tuple
+    """
+    string_expression = "".join(str(token) for token in token_list)  # Convert the token list to a string
+    string_expression = string_expression.replace("()", "\033[91m\033[1m()\033[0m")  # Highlight "()" if any
+
+    if "\033[91m" in string_expression:
+        # If any token is highlighted, the check didn't pass
+        return False, string_expression
     else:
         # Check passed
         return True, None
