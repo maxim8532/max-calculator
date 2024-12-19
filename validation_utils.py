@@ -1,3 +1,6 @@
+import operators
+
+
 def parentheses_check(token_list):
     """
     Checks for unmatched parentheses in a tokenized list and highlights all unmatched ones.
@@ -34,4 +37,34 @@ def parentheses_check(token_list):
     if stack or "\033[91m" in checked_expression:
         return False, checked_expression
     else:
-        return True, checked_expression
+        return True, None
+
+
+def binary_operators_between_valid_operands_check(token_list):
+    """
+    Checks for mis-placed binary operators and highlights them accordingly.
+    :param token_list: The token list of the expression
+    :type token_list: list
+    :return: Tuple (check_passed, checked_expression)
+    :rtype: tuple
+    """
+    checked_expression = ""  # The expression after the check, problematic operators will be highlighted
+
+    for index, token in enumerate(token_list):
+        next_token = token_list[index + 1] if index + 1 < len(token_list) else None
+        prev_token = token_list[index - 1] if index > 0 else None
+
+        if operators.Operator.is_valid_operator(token):
+            if ((next_token == "(" or isinstance(next_token, float)) and
+                    (prev_token == ")" or isinstance(prev_token, float))):
+                checked_expression += str(token)
+            else:
+                checked_expression += f"\033[91m\033[1m{token}\033[0m"  # Highlights the char in red
+        else:
+            checked_expression += str(token)
+
+    if "\033[91m" in checked_expression:
+        # Checks if there are any operators highlighted after the check.
+        return False, checked_expression  # Did not pass the check, will return the expression with the problems in red
+    else:
+        return True, None  # Passed the check successfully
