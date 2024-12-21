@@ -56,7 +56,7 @@ def binary_operators_between_valid_operands_check(token_list):
 
         if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "binary":
             # Binary operators should be next to an expression, operand or a unary operator
-            if ((next_token == "(" or isinstance(next_token, float) or
+            if ((next_token == "(" or next_token == "-(" or isinstance(next_token, float) or
                  (next_token is not None and operators.Operator.get_type(next_token) == "unary"
                  if operators.Operator.is_valid_operator(next_token) else False)) and
                     (prev_token == ")" or isinstance(prev_token, float) or
