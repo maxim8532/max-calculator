@@ -11,6 +11,7 @@ from binary_operator import BinaryOperator
 class Calculator:
     def __init__(self, expression):
         self._expression = expression
+        self._postfix_expression = None
 
     def preprocessor(self):
         """
@@ -138,3 +139,47 @@ class Calculator:
         else:
             return self._expression
 
+    def infix_to_postfix(self):
+        """
+        Converts an infix expression to postfix notation while preserving token indexes to present them
+        in an error message later if needed in a convenient way.
+        :return: List of tuples (token, index) in postfix notation.
+        :rtype: list
+        """
+        token_list = self._expression
+        output = []
+        operator_stack = []
+
+        for index, token in enumerate(token_list):
+            if isinstance(token, float):  # Numbers go directly to the output
+                output.append((token, index))
+            elif token == "(":
+                operator_stack.append((token, index))
+            elif token == ")":
+                # Pop until matching opening parenthesis
+                while operator_stack and operator_stack[-1][0] != "(":
+                    output.append(operator_stack.pop())
+                operator_stack.pop()  # Remove the opening parenthesis
+
+                # Check if a sign minus ("s") is in the stack
+                if operator_stack and operator_stack[-1][0] == "s":
+                    output.append(operator_stack.pop())
+            elif token == "-(":
+                # Treat "-(" as a signal for sign minus
+                operator_stack.append(("s", index))
+                operator_stack.append(("(", index))
+            elif Operator.is_valid_operator(token):
+                # Handle valid operators based on priority and position
+                while (operator_stack and operator_stack[-1][0] != "(" and
+                       (Operator.get_priority(operator_stack[-1][0]) > Operator.get_priority(token) or
+                        (Operator.get_priority(operator_stack[-1][0]) == Operator.get_priority(token) and
+                         Operator.get_position(token) != "right"))):
+                    output.append(operator_stack.pop())
+                operator_stack.append((token, index))
+
+        # Pop all remaining operators in the stack
+        while operator_stack:
+            output.append(operator_stack.pop())
+
+        self._postfix_expression = output
+        return self._postfix_expression  # Temporarily for testing
