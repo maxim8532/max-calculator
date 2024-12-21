@@ -14,7 +14,7 @@ def parentheses_check(token_list):
 
     # First for to check parentheses
     for index, token in enumerate(token_list):
-        if token == "(":
+        if token == "(" or token == "-(":
             stack.append(index)  # Store the index of unmatched "("
             checked_tokens.append(token)  # Add to final token list
         elif token == ")":
@@ -28,7 +28,12 @@ def parentheses_check(token_list):
 
     # Second pass to highlight unmatched opening parentheses (if exists)
     for unmatched_index in stack:
-        checked_tokens[unmatched_index] = "\033[91m\033[1m(\033[0m"
+        if checked_tokens[unmatched_index] == "(":
+            # Check for sign minus before the parentheses and highlight accordingly
+            checked_tokens[unmatched_index] = "\033[91m\033[1m(\033[0m"
+        else:
+            # "-("
+            checked_tokens[unmatched_index] = "-\033[91m\033[1m(\033[0m"
 
     # Rebuild the expression to present to the user
     checked_expression = "".join(checked_tokens)
