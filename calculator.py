@@ -132,6 +132,7 @@ class Calculator:
             error_message += f"\n{error_expression}\nUnary operators cannot be stand-alone."
 
         # Return errors if any were found
+        # TODO LATER: Add a raise for InvalidExpressionException
         if error_message:
             return error_message
         else:
