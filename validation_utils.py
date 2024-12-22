@@ -192,14 +192,14 @@ def missing_operator_check(token_list):
             not operators.Operator.is_valid_operator(next_token) or
             (isinstance(token, float) and next_token == "("))):
             # After an operand or expression an operator should come
-            checked_expression += str(token) + "\033[91m\033[1m |?| \033[0m"
+            checked_expression += str(token) + "\033[91m\033[1m|?|\033[0m"
 
         elif (prev_token is not None and operators.Operator.is_valid_operator(token) and
               operators.Operator.get_position(token) == "left" and not
               (operators.Operator.is_valid_operator(prev_token) and
                operators.Operator.get_type(prev_token) == "binary")):
             # Before a left unary operator there should be an operator
-            checked_expression += "\033[91m\033[1m |?| \033[0m" + str(token)
+            checked_expression += "\033[91m\033[1m|?|\033[0m" + str(token)
         else:
             checked_expression += str(token)
 
