@@ -63,10 +63,10 @@ def binary_operators_between_valid_operands_check(token_list):
 
         if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "binary":
             # Binary operators should be next to an expression, operand or a unary operator
-            if ((next_token == "(" or next_token == "-(" or isinstance(next_token, float) or
+            if ((next_token == "(" or next_token == "-(" or isinstance(next_token, float) or isinstance(next_token, int) or
                  (next_token is not None and operators.Operator.get_type(next_token) == "unary"
                  if operators.Operator.is_valid_operator(next_token) else False)) and
-                    (prev_token == ")" or isinstance(prev_token, float) or
+                    (prev_token == ")" or isinstance(prev_token, float) or isinstance(prev_token, int) or
                      (prev_token is not None and operators.Operator.get_type(prev_token) == "unary"
                      if operators.Operator.is_valid_operator(prev_token) else False))):
 
@@ -97,7 +97,7 @@ def negation_operator_next_to_number_check(token_list):
     for index, token in enumerate(token_list):
         next_token = token_list[index + 1] if index + 1 < len(token_list) else None
 
-        if token == "~" and not isinstance(next_token, float):
+        if token == "~" and not (isinstance(next_token, float) or isinstance(next_token, int)):
             # Checks if the token next to the "~" is a float number
             checked_expression += f"{Colors.BOLD}{Colors.FAIL}{token}{Colors.ENDC}"
         else:
@@ -148,7 +148,7 @@ def stand_alone_unary_operators_check(token_list):
         # Unary operators can be next to a number, an expression or another number, relative to their position
         if operators.Operator.is_valid_operator(token) and operators.Operator.get_type(token) == "unary":
             if operators.Operator.get_position(token) == "right" and (  # Check if the position is "right"
-                    isinstance(prev_token, float)  # Check for float number next to it
+                    (isinstance(prev_token, float) or isinstance(prev_token, int))  # Check for number next to it
                     or prev_token == ")"  # Check for end of an expression next to it
                     or (prev_token is not None and operators.Operator.get_type(prev_token) == "unary"
             if operators.Operator.is_valid_operator(prev_token) else False)):  # Check for unary operator
@@ -156,7 +156,7 @@ def stand_alone_unary_operators_check(token_list):
                 checked_expression += str(token)
 
             elif operators.Operator.get_position(token) == "left" and (  # Check if the position is "left"
-                    isinstance(next_token, float)  # Check for float number next to it
+                    (isinstance(next_token, float) or isinstance(next_token, int))  # Check for number next to it
                     or next_token == "("  # Check for start of an expression next to it
                     or (next_token is not None and operators.Operator.get_type(next_token) == "unary"
             if operators.Operator.is_valid_operator(next_token) else False)):  # Check for unary operator
@@ -191,10 +191,10 @@ def missing_operator_check(token_list):
         prev_token = token_list[index - 1] if index > 0 else None
 
         if (next_token is not None and ((operators.Operator.is_valid_operator(token) and
-                                         operators.Operator.get_type(token) == "unary" and
-                                         operators.Operator.get_position(token) == "right" or token == ")") and
-                                        not operators.Operator.is_valid_operator(next_token) or
-                                        (isinstance(token, float) and next_token == "("))):
+            operators.Operator.get_type(token) == "unary" and
+             operators.Operator.get_position(token) == "right" or token == ")") and
+             not operators.Operator.is_valid_operator(next_token) or
+             ((isinstance(token, float) or isinstance(token, int)) and next_token == "("))):
             # After an operand or expression an operator should come
             checked_expression += str(token) + f"{Colors.BOLD}{Colors.FAIL}|?|{Colors.ENDC}"
 

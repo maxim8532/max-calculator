@@ -71,7 +71,11 @@ class Calculator:
                 if char.isdecimal():
                     current_token += char
                     if not (next_char and (next_char.isdecimal() or next_char == ".")):
-                        token_list.append(float(current_token))  # Add a float token
+                        number = float(current_token)
+                        if number.is_integer():
+                            token_list.append(int(current_token))
+                        else:
+                            token_list.append(number)  # Add a float token
                         current_token = ""  # Reset for next token
                 elif char == ".":
                     current_token += char
@@ -162,7 +166,7 @@ class Calculator:
         operator_stack = []
 
         for index, token in enumerate(token_list):
-            if isinstance(token, float):  # Numbers go directly to the output
+            if isinstance(token, float) or isinstance(token, int):  # Numbers go directly to the output
                 output.append((token, index))
             elif token == "(":
                 operator_stack.append((token, index))
@@ -205,7 +209,7 @@ class Calculator:
         stack = []
 
         for token, index in self._postfix_expression:
-            if isinstance(token, float):  # Operands
+            if isinstance(token, float) or isinstance(token, int):  # Operands
                 stack.append((token, index))
             elif Operator.is_valid_operator(token):  # Operators
                 operator_type = Operator.get_type(token)
@@ -275,7 +279,10 @@ class Calculator:
             if self._expression is not None:
                 Calculator.infix_to_postfix(self)
             if self._expression is not None:
-                print(f"Result: {Calculator.evaluate_postfix(self)}")
+                result = Calculator.evaluate_postfix(self)
+                if result.is_integer():
+                    result = int(result)
+                print(f"Result: {result}")
         except InvalidExpressionException as e:
             print(f"{e}")
         except ValueError as e:
@@ -283,7 +290,8 @@ class Calculator:
         except ZeroDivisionError as e:
             print(f"{e}")
         except OverflowError:
-            print(f"\n{Colors.WARNING}Number is too big for the calculator to handle!{Colors.ENDC}")
+            print(f"\n{Colors.WARNING}Calculation is too big for the calculator to handle!{Colors.ENDC}")
         except MemoryError:
+            # Just for safety :)
             print(
                 f"\n{Colors.WARNING}Calculation exceeds available memory. Please simplify your expression.{Colors.ENDC}")
