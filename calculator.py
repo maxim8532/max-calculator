@@ -101,7 +101,7 @@ class Calculator:
         3. Check binary operator placement
         4. Check negation operator placement
         5. Check for stand-alone unary operators
-        TODO: Add a missing operator check after a unary operator/number should come a operator
+        6. Check for missing operators between operands
 
         :return: The error message showing the user every error highlighted in red
         :rtype: str
@@ -133,6 +133,11 @@ class Calculator:
         check_passed, error_expression = validation_utils.stand_alone_unary_operators_check(self._expression)
         if not check_passed:
             error_message += f"\n{error_expression}\nUnary operators cannot be stand-alone."
+
+        # 6. Check for missing operators between operands
+        check_passed, error_expression = validation_utils.stand_alone_unary_operators_check(self._expression)
+        if not check_passed:
+            error_message += f"\n{error_expression}\nThere are some missing operators."
 
         # Return errors if any were found
         # TODO LATER: Add a raise for InvalidExpressionException
