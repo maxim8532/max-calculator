@@ -1,4 +1,5 @@
 import operators
+from colors import Colors
 
 
 def parentheses_check(token_list):
@@ -19,7 +20,8 @@ def parentheses_check(token_list):
             checked_tokens.append(token)  # Add to final token list
         elif token == ")":
             if not stack:
-                checked_tokens.append("\033[91m\033[1m)\033[0m")  # Highlight unmatched closing parenthesis
+                checked_tokens.append(
+                    f"{Colors.BOLD}{Colors.FAIL}){Colors.ENDC}")  # Highlight unmatched closing parenthesis
             else:
                 stack.pop()  # Match found, remove from stack
                 checked_tokens.append(token)
@@ -30,16 +32,16 @@ def parentheses_check(token_list):
     for unmatched_index in stack:
         if checked_tokens[unmatched_index] == "(":
             # Check for sign minus before the parentheses and highlight accordingly
-            checked_tokens[unmatched_index] = "\033[91m\033[1m(\033[0m"
+            checked_tokens[unmatched_index] = f"{Colors.BOLD}{Colors.FAIL}({Colors.ENDC}"
         else:
             # "-("
-            checked_tokens[unmatched_index] = "-\033[91m\033[1m(\033[0m"
+            checked_tokens[unmatched_index] = f"-{Colors.BOLD}{Colors.FAIL}({Colors.ENDC}"
 
     # Rebuild the expression to present to the user
     checked_expression = "".join(checked_tokens)
 
     # Checks if there are unmatched "(" in the stack or any ")" are highlighted
-    if stack or "\033[91m" in checked_expression:
+    if stack or Colors.FAIL in checked_expression:
         return False, checked_expression
     else:
         return True, None
@@ -70,11 +72,11 @@ def binary_operators_between_valid_operands_check(token_list):
 
                 checked_expression += str(token)
             else:
-                checked_expression += f"\033[91m\033[1m{token}\033[0m"  # Highlights the char in red
+                checked_expression += f"{Colors.BOLD}{Colors.FAIL}{token}{Colors.ENDC}"  # Highlights the char in red
         else:
             checked_expression += str(token)  # Adding a non-binary operator token
 
-    if "\033[91m" in checked_expression:
+    if Colors.FAIL in checked_expression:
         # Checks if there are any operators highlighted after the check.
         return False, checked_expression  # Did not pass the check, will return the expression with the problems in red
     else:
@@ -96,11 +98,11 @@ def negation_operator_next_to_number_check(token_list):
 
         if token == "~" and not isinstance(next_token, float):
             # Checks if the token next to the "~" is a float number
-            checked_expression += f"\033[91m\033[1m{token}\033[0m"
+            checked_expression += f"{Colors.BOLD}{Colors.FAIL}{token}{Colors.ENDC}"
         else:
             checked_expression += str(token)
 
-    if "\033[91m" in checked_expression:
+    if Colors.FAIL in checked_expression:
         # If any token is highlighted, the check didn't pass
         return False, checked_expression
     else:
@@ -117,9 +119,10 @@ def empty_parentheses_check(token_list):
     :rtype: tuple
     """
     string_expression = "".join(str(token) for token in token_list)  # Convert the token list to a string
-    string_expression = string_expression.replace("()", "\033[91m\033[1m()\033[0m")  # Highlight "()" if any
+    string_expression = string_expression.replace("()",
+                                                 f"{Colors.BOLD}{Colors.FAIL}(){Colors.ENDC}")  # Highlight "()" if any
 
-    if "\033[91m" in string_expression:
+    if Colors.FAIL in string_expression:
         # If any token is highlighted, the check didn't pass
         return False, string_expression
     else:
@@ -160,11 +163,11 @@ def stand_alone_unary_operators_check(token_list):
                 checked_expression += str(token)
 
             else:
-                checked_expression += f"\033[91m\033[1m{token}\033[0m"  # Highlight the problematic operator
+                checked_expression += f"{Colors.BOLD}{Colors.FAIL}{token}{Colors.ENDC}"  # Highlight the problematic operator
         else:
             checked_expression += str(token)
 
-    if "\033[91m" in checked_expression:
+    if Colors.FAIL in checked_expression:
         # If any token is highlighted, the check didn't pass
         return False, checked_expression
     else:
@@ -187,23 +190,23 @@ def missing_operator_check(token_list):
         prev_token = token_list[index - 1] if index > 0 else None
 
         if (next_token is not None and ((operators.Operator.is_valid_operator(token) and
-            operators.Operator.get_type(token) == "unary" and
-            operators.Operator.get_position(token) == "right" or token == ")") and
-            not operators.Operator.is_valid_operator(next_token) or
-            (isinstance(token, float) and next_token == "("))):
+                                         operators.Operator.get_type(token) == "unary" and
+                                         operators.Operator.get_position(token) == "right" or token == ")") and
+                                        not operators.Operator.is_valid_operator(next_token) or
+                                        (isinstance(token, float) and next_token == "("))):
             # After an operand or expression an operator should come
-            checked_expression += str(token) + "\033[91m\033[1m|?|\033[0m"
+            checked_expression += str(token) + f"{Colors.BOLD}{Colors.FAIL}|?|{Colors.ENDC}"
 
         elif (prev_token is not None and operators.Operator.is_valid_operator(token) and
               operators.Operator.get_position(token) == "left" and not
               (operators.Operator.is_valid_operator(prev_token) and
                operators.Operator.get_type(prev_token) == "binary")):
             # Before a left unary operator there should be an operator
-            checked_expression += "\033[91m\033[1m|?|\033[0m" + str(token)
+            checked_expression += f"{Colors.BOLD}{Colors.FAIL}|?|{Colors.ENDC}" + str(token)
         else:
             checked_expression += str(token)
 
-    if "\033[91m" in checked_expression:
+    if Colors.FAIL in checked_expression:
         # If any token is highlighted, the check didn't pass
         return False, checked_expression
     else:
