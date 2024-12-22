@@ -25,6 +25,8 @@ def only_valid_characters_check(expression):
         else:
             expression_after_check += char  # Adding a valid char
     if invalid_characters_list:
+        expression_after_check.replace("u", "-")
+        expression_after_check.replace("s", "-")
         raise InvalidCharacterException(f"{expression_after_check}\n\033[91mInvalid Characters: \033[0m"
                                         f"{invalid_characters_list}")  # Turns the message sent to the exception red
     else:

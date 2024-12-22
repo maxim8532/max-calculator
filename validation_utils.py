@@ -42,7 +42,7 @@ def parentheses_check(token_list):
 
     # Checks if there are unmatched "(" in the stack or any ")" are highlighted
     if stack or Colors.FAIL in checked_expression:
-        return False, checked_expression
+        return False, checked_expression.replace("u", "-")
     else:
         return True, None
 
@@ -78,7 +78,8 @@ def binary_operators_between_valid_operands_check(token_list):
 
     if Colors.FAIL in checked_expression:
         # Checks if there are any operators highlighted after the check.
-        return False, checked_expression  # Did not pass the check, will return the expression with the problems in red
+        return False, checked_expression.replace("u", "-")
+        # Did not pass the check, will return the expression with the problems in red
     else:
         return True, None  # Passed the check successfully
 
@@ -124,7 +125,7 @@ def empty_parentheses_check(token_list):
 
     if Colors.FAIL in string_expression:
         # If any token is highlighted, the check didn't pass
-        return False, string_expression
+        return False, string_expression.replace("u", "-")
     else:
         # Check passed
         return True, None
@@ -169,7 +170,7 @@ def stand_alone_unary_operators_check(token_list):
 
     if Colors.FAIL in checked_expression:
         # If any token is highlighted, the check didn't pass
-        return False, checked_expression
+        return False, checked_expression.replace("u", "-")
     else:
         # Check passed
         return True, None
@@ -208,7 +209,7 @@ def missing_operator_check(token_list):
 
     if Colors.FAIL in checked_expression:
         # If any token is highlighted, the check didn't pass
-        return False, checked_expression
+        return False, checked_expression.replace("u", "-")
     else:
         # Check passed
         return True, None

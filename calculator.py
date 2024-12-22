@@ -79,7 +79,7 @@ class Calculator:
                         if not next_char.isdecimal():
                             token_list.append(float(current_token))
                             current_token = ""
-                elif char == "s":  # Handle sign minus  FIXME: missing check if next operand is decimal or dot
+                elif char == "s":  # Handle sign minus
                     current_token += "-"
                 else:
                     current_token += char
@@ -156,8 +156,6 @@ class Calculator:
         """
         Converts an infix expression to postfix notation while preserving token indexes to present them
         in an error message later if needed in a convenient way.
-        :return: List of tuples (token, index) in postfix notation.
-        :rtype: list
         """
         token_list = self._expression
         output = []
@@ -195,7 +193,6 @@ class Calculator:
             output.append(operator_stack.pop())
 
         self._postfix_expression = output
-        return self._postfix_expression  # Temporarily for testing
 
     def evaluate_postfix(self):
         """
@@ -203,6 +200,7 @@ class Calculator:
         :return: The result of the evaluated expression.
         :rtype: float
         :raises ValueError: If the postfix expression is invalid or contains runtime errors.
+        :raises ZeroDivisionError: when a division by zero occurs.
         """
         stack = []
 
@@ -224,7 +222,7 @@ class Calculator:
                     # Division by zero check
                     if token == "/" and right_operand == 0:
                         highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
-                            self._expression, (right_index - 1, right_index))  # highlights the "/0"
+                            self._expression, (right_index - 1, right_index)).replace("u", "-")  # highlights the "/0"
                         raise ZeroDivisionError(f"\n{highlighted_expression}\n{Colors.FAIL}Zero Division Error: "
                                                 f"{Colors.ENDC}Division by zero is not allowed.")
 
@@ -242,14 +240,16 @@ class Calculator:
 
                     if token == "!" and (operand < 0 or not (operand == int(operand)) or operand > 170):
                         highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
-                            self._expression, (operand_index, operand_index + 1))  # highlights the "{operand}!"
+                            self._expression, (operand_index, operand_index + 1)).replace("u", "-")
+                        # highlights the "{operand}!"
                         raise ValueError(
                             f"\n{highlighted_expression}\n{Colors.FAIL}Value Error: {Colors.ENDC}"
                             f"Factorial is only defined for non-negative integers up to 170.")
 
                     if token == "#" and operand < 0:
                         highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
-                            self._expression, (operand_index, operand_index + 1))  # highlights the "{operand}#"
+                            self._expression, (operand_index, operand_index + 1)).replace("u", "-")
+                        # highlights the "{operand}#"
                         raise ValueError(
                             f"\n{highlighted_expression}\n{Colors.FAIL}Value Error: {Colors.ENDC}"
                             f"Hashtag is only defined for non-negative numbers")
@@ -280,9 +280,10 @@ class Calculator:
             print(f"{e}")
         except ValueError as e:
             print(f"{e}")
-        except OverflowError as e:
-            print(f"\n{Colors.WARNING}Number is too big for the calculator to handle!{Colors.ENDC}")
         except ZeroDivisionError as e:
             print(f"{e}")
+        except OverflowError:
+            print(f"\n{Colors.WARNING}Number is too big for the calculator to handle!{Colors.ENDC}")
         except MemoryError:
-            print(f"\n{Colors.WARNING}Calculation exceeds available memory. Please simplify your expression.{Colors.ENDC}")
+            print(
+                f"\n{Colors.WARNING}Calculation exceeds available memory. Please simplify your expression.{Colors.ENDC}")
