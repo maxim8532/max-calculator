@@ -36,7 +36,7 @@ class Calculator:
             if not expression:
                 # Empty expression
                 self._expression = None
-                print(f"{Colors.WARNING}\033[1mEmpty Expression.{Colors.ENDC}")
+                print(f"\n{Colors.WARNING}\033[1mEmpty Expression.{Colors.ENDC}")
             else:
                 self._expression = expression
         except InvalidCharacterException as e:
@@ -239,12 +239,12 @@ class Calculator:
                     except IndexError:  # Incase the checks somehow don't catch it before
                         raise ValueError("Invalid postfix expression: insufficient operand for unary operator.")
 
-                    if token == "!" and (operand < 0 or not (operand == int(operand))):
+                    if token == "!" and (operand < 0 or not (operand == int(operand)) or operand > 170):
                         highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
                             self._expression, (operand_index, operand_index + 1))  # highlights the "{operand}!"
                         raise ValueError(
                             f"\n{highlighted_expression}\n{Colors.FAIL}Value Error: {Colors.ENDC}"
-                            f"Factorial is only defined for non-negative integers.")
+                            f"Factorial is only defined for non-negative integers up to 170.")
 
                     if token == "#" and operand < 0:
                         highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
@@ -276,6 +276,8 @@ class Calculator:
             if self._expression is not None:
                 print(f"Result: {Calculator.evaluate_postfix(self)}")
         except InvalidExpressionException as e:
-            print(f"{e}".replace("u", "-"))
+            print(f"{e}")
         except ValueError as e:
             print(f"{e}")
+        except OverflowError as e:
+            print(f"\n{Colors.WARNING}Number is too big for the calculator to handle!{Colors.ENDC}")
