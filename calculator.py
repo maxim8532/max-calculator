@@ -241,10 +241,17 @@ class Calculator:
 
                     if token == "!" and (operand < 0 or not (operand == int(operand))):
                         highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
-                            self._expression, (operand_index, operand_index + 1))  # highlights the "/0"
+                            self._expression, (operand_index, operand_index + 1))  # highlights the "{operand}!"
                         raise ValueError(
                             f"\n{highlighted_expression}\n{Colors.FAIL}Value Error: {Colors.ENDC}"
                             f"Factorial is only defined for non-negative integers.")
+
+                    if token == "#" and operand < 0:
+                        highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
+                            self._expression, (operand_index, operand_index + 1))  # highlights the "{operand}#"
+                        raise ValueError(
+                            f"\n{highlighted_expression}\n{Colors.FAIL}Value Error: {Colors.ENDC}"
+                            f"Hashtag is only defined for non-negative numbers")
 
                     # Perform the operation
                     result = operation(operand)

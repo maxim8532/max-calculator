@@ -41,8 +41,6 @@ class UnaryOperator:
         """
         # Handle float operands
         operand = int(str(operand).replace(".", ""))
-        if operand < 0:
-            raise ValueError("Hashtag is only defined for non-negative numbers")
         hashtag_sum = 0
         while operand != 0:
             hashtag_sum += operand % 10
