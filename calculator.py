@@ -279,7 +279,7 @@ class Calculator:
             if self._expression is not None:
                 Calculator.infix_to_postfix(self)
             if self._expression is not None:
-                result = Calculator.evaluate_postfix(self)
+                result = float(Calculator.evaluate_postfix(self))
                 if result.is_integer():
                     result = int(result)
                 print(f"Result: {result}")
