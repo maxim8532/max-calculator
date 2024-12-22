@@ -33,8 +33,12 @@ class Calculator:
             # Check if the expression is valid, else raise an exception
             expression = preprocessor_utils.reduce_minuses(expression)  # Reduce the number of minuses
             expression = preprocessor_utils.mark_special_minuses(expression)  # Marks unary and sign minuses
-            self._expression = expression
-            print(expression)
+            if not expression:
+                # Empty expression
+                self._expression = None
+                print("\033[91m\033[1mEmpty Expression.\033[0m")
+            else:
+                self._expression = expression
         except InvalidCharacterException as e:
             print(f"{e} \n\033[92mValid Characters:\033[0m numbers (Integer and decimal), brackets () and operators: "
                   f"{list(Operator.get_operators_keys())}")
@@ -85,10 +89,9 @@ class Calculator:
             if current_token:
                 token_list.append(float(current_token))
             self._expression = token_list
-            return token_list
         except InvalidDecimalPointException as e:
             print(f"{e} \n\033[92mValid Placement of Decimal Point: \033[0m(0).123, 1.23, 123.(0)")
-            self._expression = []  # Expression is not valid
+            self._expression = None  # Expression is not valid
 
     def validation(self):
         """
@@ -142,6 +145,7 @@ class Calculator:
         # Return errors if any were found
         # TODO LATER: Add a raise for InvalidExpressionException
         if error_message:
+            self._expression = None
             return error_message
         else:
             return self._expression
@@ -244,4 +248,14 @@ class Calculator:
 
         return stack[0][0]  # Return only the result
 
+    def calculate(self):
+        Calculator.preprocessor(self)
+        if self._expression is not None:
+            Calculator.tokenization(self)
+        if self._expression is not None:
+            Calculator.validation(self)
+        if self._expression is not None:
+            Calculator.infix_to_postfix(self)
+        if self._expression is not None:
+            print(f"Result: {Calculator.evaluate_postfix(self)}")
 
