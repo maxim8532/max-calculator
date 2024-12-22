@@ -190,26 +190,52 @@ def missing_operator_check(token_list):
         next_token = token_list[index + 1] if index + 1 < len(token_list) else None
         prev_token = token_list[index - 1] if index > 0 else None
 
-        if (next_token is not None and ((operators.Operator.is_valid_operator(token) and
-            operators.Operator.get_type(token) == "unary" and
-             operators.Operator.get_position(token) == "right" or token == ")") and
-             not operators.Operator.is_valid_operator(next_token) or
-             ((isinstance(token, float) or isinstance(token, int)) and next_token == "("))):
-            # After an operand or expression an operator should come
-            checked_expression += str(token) + f"{Colors.BOLD}{Colors.FAIL}|?|{Colors.ENDC}"
+        is_right_unary_or_number_close = (
+                token == ")" or
+                (
+                        operators.Operator.is_valid_operator(token) and
+                        operators.Operator.get_type(token) == "unary" and
+                        operators.Operator.get_position(token) == "right"
+                ) or
+                isinstance(token, float) or isinstance(token, int)
+        )
 
-        elif (prev_token is not None and operators.Operator.is_valid_operator(token) and
-              operators.Operator.get_position(token) == "left" and not
-              (operators.Operator.is_valid_operator(prev_token) and
-               operators.Operator.get_type(prev_token) == "binary")):
-            # Before a left unary operator there should be an operator
-            checked_expression += f"{Colors.BOLD}{Colors.FAIL}|?|{Colors.ENDC}" + str(token)
+        next_is_operand_or_left_unary = (
+                next_token == "(" or
+                isinstance(next_token, float) or isinstance(next_token, int) or
+                (
+                        operators.Operator.is_valid_operator(next_token) and
+                        operators.Operator.get_type(next_token) == "unary" and
+                        operators.Operator.get_position(next_token) == "left"
+                )
+        )
+
+        cond1 = is_right_unary_or_number_close and next_is_operand_or_left_unary
+
+        is_left_unary = (
+                operators.Operator.is_valid_operator(token) and
+                operators.Operator.get_type(token) == "unary" and
+                operators.Operator.get_position(token) == "left"
+        )
+        prev_is_operand_or_right_unary_close = (
+                prev_token == ")" or
+                isinstance(prev_token, float) or isinstance(prev_token, int) or
+                (
+                        operators.Operator.is_valid_operator(prev_token) and
+                        operators.Operator.get_type(prev_token) == "unary" and
+                        operators.Operator.get_position(prev_token) == "right"
+                )
+        )
+
+        cond2 = is_left_unary and prev_is_operand_or_right_unary_close
+
+        if cond1 or cond2:
+            # Highlight as a missing operator situation
+            checked_expression += f"{token}{Colors.BOLD}{Colors.FAIL}|?|{Colors.ENDC}"
         else:
             checked_expression += str(token)
 
     if Colors.FAIL in checked_expression:
-        # If any token is highlighted, the check didn't pass
         return False, checked_expression.replace("u", "-")
     else:
-        # Check passed
         return True, None
