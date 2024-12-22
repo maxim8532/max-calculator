@@ -350,6 +350,9 @@ class Calculator:
             print(f"{e}")
         except ZeroDivisionError as e:
             print(f"{e}")
+        except TypeError as e:
+            # If something in the checks goes terrible
+            print(f"{e}")
         except OverflowError:
             print(f"\n{Colors.WARNING}Calculation is too big for the calculator to handle!{Colors.ENDC}")
         except MemoryError:
