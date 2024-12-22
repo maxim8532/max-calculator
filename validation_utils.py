@@ -147,7 +147,7 @@ def stand_alone_unary_operators_check(token_list):
                     isinstance(prev_token, float)  # Check for float number next to it
                     or prev_token == ")"  # Check for end of an expression next to it
                     or (prev_token is not None and operators.Operator.get_type(prev_token) == "unary"
-                        if operators.Operator.is_valid_operator(prev_token) else False)):  # Check for unary operator
+            if operators.Operator.is_valid_operator(prev_token) else False)):  # Check for unary operator
 
                 checked_expression += str(token)
 
@@ -155,12 +155,51 @@ def stand_alone_unary_operators_check(token_list):
                     isinstance(next_token, float)  # Check for float number next to it
                     or next_token == "("  # Check for start of an expression next to it
                     or (next_token is not None and operators.Operator.get_type(next_token) == "unary"
-                        if operators.Operator.is_valid_operator(next_token) else False)):  # Check for unary operator
+            if operators.Operator.is_valid_operator(next_token) else False)):  # Check for unary operator
 
                 checked_expression += str(token)
 
             else:
                 checked_expression += f"\033[91m\033[1m{token}\033[0m"  # Highlight the problematic operator
+        else:
+            checked_expression += str(token)
+
+    if "\033[91m" in checked_expression:
+        # If any token is highlighted, the check didn't pass
+        return False, checked_expression
+    else:
+        # Check passed
+        return True, None
+
+
+def missing_operator_check(token_list):
+    """
+    Checks for missing operators between operands and expressions.
+    :param token_list: The token list of the expression
+    :type token_list: list
+    :return: Tuple (check_passed, checked_expression)
+    :rtype: tuple
+    """
+    checked_expression = ""
+
+    for index, token in enumerate(token_list):
+        next_token = token_list[index + 1] if index + 1 < len(token_list) else None
+        prev_token = token_list[index - 1] if index > 0 else None
+
+        if (next_token is not None and ((operators.Operator.is_valid_operator(token) and
+            operators.Operator.get_type(token) == "unary" and
+            operators.Operator.get_position(token) == "right" or token == ")") and
+            not operators.Operator.is_valid_operator(next_token) or
+            (isinstance(token, float) and next_token == "("))):
+            # After an operand or expression an operator should come
+            checked_expression += str(token) + "\033[91m\033[1m |?| \033[0m"
+
+        elif (prev_token is not None and operators.Operator.is_valid_operator(token) and
+              operators.Operator.get_position(token) == "left" and not
+              (operators.Operator.is_valid_operator(prev_token) and
+               operators.Operator.get_type(prev_token) == "binary")):
+            # Before a left unary operator there should be an operator
+            checked_expression += "\033[91m\033[1m |?| \033[0m" + str(token)
         else:
             checked_expression += str(token)
 
