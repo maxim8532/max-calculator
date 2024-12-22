@@ -17,7 +17,7 @@ def only_valid_characters_check(expression):
     invalid_characters_list = []
 
     for char in expression:
-        if not (char.isnumeric() or Operator.is_valid_operator(char) or char in valid_special_characters):
+        if not (char.isnumeric() or Operator.is_valid_operator(char) or char in valid_special_characters) or char == "u":
             if char not in invalid_characters_list:
                 invalid_characters_list.append(char)
             expression_after_check += "\033[91m\033[1m" + char + "\033[0m"

@@ -40,9 +40,11 @@ class Calculator:
             else:
                 self._expression = expression
         except InvalidCharacterException as e:
+            valid_operators_list = list(Operator.get_operators_keys())
+            valid_operators_list.remove('u')  # mark for unary minus, should not be inserted by user
             print(
                 f"{e} \n{Colors.GREEN}Valid Characters:{Colors.ENDC} numbers (Integer and decimal), brackets () and operators: "
-                f"{list(Operator.get_operators_keys())}")
+                f"{valid_operators_list}")
             self._expression = None
             # Prints the valid characters explanation in green
 
@@ -270,6 +272,9 @@ class Calculator:
         return stack[0][0]  # Return only the result
 
     def calculate(self):
+        """
+        The final step the calculates the expression if all the steps before were completed.
+        """
         try:
             Calculator.preprocessor(self)
             if self._expression is not None:
@@ -282,7 +287,7 @@ class Calculator:
                 result = float(Calculator.evaluate_postfix(self))
                 if result.is_integer():
                     result = int(result)
-                print(f"Result: {result}")
+                print(f"{Colors.GREEN}Result:{Colors.ENDC} {result}")
         except InvalidExpressionException as e:
             print(f"{e}")
         except ValueError as e:
