@@ -4,6 +4,7 @@ from operators import Operator
 import preprocessor_utils
 import tokenization_utils
 import validation_utils
+import postfix_evaluation_utils
 from unary_operator import UnaryOperator
 from binary_operator import BinaryOperator
 
@@ -100,6 +101,7 @@ class Calculator:
         3. Check binary operator placement
         4. Check negation operator placement
         5. Check for stand-alone unary operators
+        TODO: Add a missing operator check after a unary operator/number should come a operator
 
         :return: The error message showing the user every error highlighted in red
         :rtype: str
@@ -183,3 +185,58 @@ class Calculator:
 
         self._postfix_expression = output
         return self._postfix_expression  # Temporarily for testing
+
+    def evaluate_postfix(self):
+        """
+        Evaluates the postfix expression.
+        :return: The result of the evaluated expression.
+        :rtype: float
+        :raises ValueError: If the postfix expression is invalid or contains runtime errors.
+        """
+        stack = []
+
+        for token, index in self._postfix_expression:
+            if isinstance(token, float):  # Operands
+                stack.append((token, index))
+            elif Operator.is_valid_operator(token):  # Operators
+                operator_type = Operator.get_type(token)
+                operation = Operator.get_operation(token)
+
+                if operator_type == "binary":
+                    # Binary operator requires two operands
+                    try:
+                        right_operand, right_index = stack.pop()
+                        left_operand, left_index = stack.pop()
+                    except IndexError:  # Incase the checks somehow don't catch it before
+                        raise ValueError("Invalid postfix expression: insufficient operands for binary operator.")
+
+                    # Division by zero check
+                    if token == "/" and right_operand == 0:
+                        highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
+                            self._expression, (right_index - 1, right_index))  # highlights the "/0"
+                        raise ZeroDivisionError(f"\n{highlighted_expression}\nDivision by zero is not allowed.")
+
+                    # Perform the operation
+                    result = operation(left_operand, right_operand)
+                    combined_index = (left_index, right_index)
+                    stack.append((result, combined_index))
+
+                elif operator_type == "unary":
+                    # Unary operator requires one operand
+                    try:
+                        operand, operand_index = stack.pop()
+                    except IndexError:  # Incase the checks somehow don't catch it before
+                        raise ValueError("Invalid postfix expression: insufficient operand for unary operator.")
+
+                    # Perform the operation
+                    result = operation(operand)
+                    stack.append((result, operand_index))
+
+        # Final validation
+        if len(stack) != 1:
+            # Incase the checks somehow don't catch it before
+            raise ValueError("Invalid postfix expression: too many operands or insufficient operators.")
+
+        return stack[0][0]  # Return only the result
+
+
