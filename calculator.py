@@ -6,10 +6,62 @@ import preprocessor_utils
 import tokenization_utils
 import validation_utils
 import postfix_evaluation_utils
+import history_utils
 from colors import Colors
 
 
 class Calculator:
+    """
+        A class representing a mathematical expression evaluator with preprocessing, validation,
+        infix-to-postfix conversion, and postfix evaluation steps.
+
+        Attributes:
+            _expression (str or list): The mathematical expression to evaluate, initially in string form and
+                tokenized as a list during processing.
+            _postfix_expression (list): The expression converted into postfix notation for evaluation.
+            history (list): The 5 most recent expressions calculated.
+
+        Methods:
+            __init__(expression):
+                Initializes the Calculator instance with a mathematical expression.
+
+            preprocessor():
+                Preprocesses the input expression to prepare it for tokenization and validation.
+                - Removes whitespace.
+                - Checks for invalid characters.
+                - Reduces sequences of minuses.
+                - Marks special minuses (unary and sign).
+
+            tokenization():
+                Converts the preprocessed expression into a list of tokens (numbers and operators).
+                - Ensures valid placement of decimal points.
+                - Handles negative numbers.
+
+            validation():
+                Validates the tokenized expression against predefined rules:
+                - Ensures parentheses are balanced and used correctly.
+                - Prevents empty parentheses.
+                - Checks the proper placement of binary and unary operators.
+                - Validates negation operator placement.
+                - Ensures no missing operators between operands.
+
+            infix_to_postfix():
+                Converts the validated infix expression to postfix notation while preserving token indexes.
+                - Maintains operator priority and position.
+                - Handles special cases like "-(" for unary minus.
+
+            evaluate_postfix():
+                Evaluates the postfix expression and returns the calculated result.
+                - Performs error handling for division by zero.
+                - Validates factorials and hashtags (custom operators) for valid input.
+
+            calculate():
+                The main calculation method that combines all the steps:
+                - Preprocessing, tokenization, validation, conversion, and evaluation.
+                - Handles exceptions such as invalid expressions, division by zero, and overflow errors.
+        """
+    expression_history = []
+
     def __init__(self, expression):
         self._expression = expression
         self._postfix_expression = None
@@ -288,6 +340,9 @@ class Calculator:
                 if result.is_integer():
                     result = int(result)
                 print(f"{Colors.GREEN}Result:{Colors.ENDC} {result}")
+                # Add to history only if calculation is successful
+                expression_str = " ".join(map(str, self._expression))
+                history_utils.add_to_history(Calculator.expression_history, expression_str, result)
         except InvalidExpressionException as e:
             print(f"{e}")
         except ValueError as e:
