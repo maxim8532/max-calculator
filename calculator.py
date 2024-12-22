@@ -40,8 +40,9 @@ class Calculator:
             else:
                 self._expression = expression
         except InvalidCharacterException as e:
-            print(f"{e} \n{Colors.GREEN}Valid Characters:{Colors.ENDC} numbers (Integer and decimal), brackets () and operators: "
-                  f"{list(Operator.get_operators_keys())}")
+            print(
+                f"{e} \n{Colors.GREEN}Valid Characters:{Colors.ENDC} numbers (Integer and decimal), brackets () and operators: "
+                f"{list(Operator.get_operators_keys())}")
             self._expression = ""
             # Prints the valid characters explanation in green
 
@@ -147,11 +148,9 @@ class Calculator:
         if not check_passed:
             error_message += (f"\n\n{error_expression}\n{Colors.FAIL}Invalid Expression: {Colors.ENDC}"
                               f"There are some missing operators.")
-
         if error_message:
             self._expression = None
             raise InvalidExpressionException(f"\n{error_message}")
-
 
     def infix_to_postfix(self):
         """
@@ -240,6 +239,13 @@ class Calculator:
                     except IndexError:  # Incase the checks somehow don't catch it before
                         raise ValueError("Invalid postfix expression: insufficient operand for unary operator.")
 
+                    if token == "!" and (operand < 0 or not (operand == int(operand))):
+                        highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
+                            self._expression, (operand_index, operand_index + 1))  # highlights the "/0"
+                        raise ValueError(
+                            f"\n{highlighted_expression}\n{Colors.FAIL}Value Error: {Colors.ENDC}"
+                            f"Factorial is only defined for non-negative integers.")
+
                     # Perform the operation
                     result = operation(operand)
                     stack.append((result, operand_index))
@@ -263,7 +269,6 @@ class Calculator:
             if self._expression is not None:
                 print(f"Result: {Calculator.evaluate_postfix(self)}")
         except InvalidExpressionException as e:
-            print(f"{e}")
+            print(f"{e}".replace("u", "-"))
         except ValueError as e:
             print(f"{e}")
-

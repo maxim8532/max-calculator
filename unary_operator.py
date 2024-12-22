@@ -24,12 +24,11 @@ class UnaryOperator:
         :rtype: int
         :raise ValueError: The factorial operation is only defined for non-negative integers
         """
-        if not isinstance(operand, int) or operand < 0:
-            raise ValueError("Factorial is only defined for non-negative integers.")
+        operand = int(operand)
         factorial_sum = 1
         for number in range(1, operand + 1):
             factorial_sum *= number
-        return factorial_sum
+        return float(factorial_sum)
 
     @staticmethod
     def hashtag(operand):
