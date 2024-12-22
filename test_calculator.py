@@ -13,7 +13,6 @@ from calculator import Calculator
 def test_syntax_errors(expression):
     calc = Calculator(expression)
     result = calc.calculate()
-    #  The code raises exceptions instead of
     assert result is None, (
         f"Expected an invalid result (None) for syntax error '{expression}', "
         f"but got {result}"
@@ -114,16 +113,17 @@ def test_complex_expressions(expression, expected):
     # Convert the result to float in case it's large or decimal
     result_float = float(result)
 
-    # If expected is float, allow some tolerance
+    # If expected is float, allow some tolerance (for larger floats there is a method to ease tolerance)
     if isinstance(expected, float):
         assert abs(result_float - expected) < 1e-5 or \
                (abs(expected) > 1 and abs(result_float - expected) / abs(expected) < 1e-5), \
             f"Expected ~{expected}, got {result_float} for '{expression}'"
     else:
-        # If it's an integer scenario, just compare exactly
+        # If it's an int, just compare exactly
         assert result == expected, (
             f"Expected {expected}, got {result} for '{expression}'"
         )
+
 
 @pytest.mark.parametrize("expression, expected", complex_expressions)
 def test_complex_expressions(expression, expected):
