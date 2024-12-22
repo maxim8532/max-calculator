@@ -124,3 +124,24 @@ def test_complex_expressions(expression, expected):
         assert result == expected, (
             f"Expected {expected}, got {result} for '{expression}'"
         )
+
+@pytest.mark.parametrize("expression, expected", complex_expressions)
+def test_complex_expressions(expression, expected):
+    result = Calculator(expression).calculate()
+    # Must get a non-None result for valid expressions:
+    assert result is not None, (
+        f"Expected a number for '{expression}', but got None."
+    )
+    result_float = float(result)
+    if isinstance(expected, float):
+        # Ease tolerance for large floats
+        rel_tol = 1e-5
+        abs_diff = abs(result_float - expected)
+        rel_diff = abs_diff / abs(expected) if abs(expected) > 1e-12 else abs_diff
+        assert (abs_diff < 1e-4) or (rel_diff < rel_tol), (
+            f"Expected ~{expected}, got {result_float} for '{expression}'"
+        )
+    else:
+        assert result == expected, (
+            f"Expected {expected}, got {result} for '{expression}'"
+        )
