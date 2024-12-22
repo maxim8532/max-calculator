@@ -43,7 +43,7 @@ class Calculator:
             print(
                 f"{e} \n{Colors.GREEN}Valid Characters:{Colors.ENDC} numbers (Integer and decimal), brackets () and operators: "
                 f"{list(Operator.get_operators_keys())}")
-            self._expression = ""
+            self._expression = None
             # Prints the valid characters explanation in green
 
     def tokenization(self):
@@ -225,7 +225,8 @@ class Calculator:
                     if token == "/" and right_operand == 0:
                         highlighted_expression = postfix_evaluation_utils.highlight_infix_error(
                             self._expression, (right_index - 1, right_index))  # highlights the "/0"
-                        raise ZeroDivisionError(f"\n{highlighted_expression}\nDivision by zero is not allowed.")
+                        raise ZeroDivisionError(f"\n{highlighted_expression}\n{Colors.FAIL}Zero Division Error: "
+                                                f"{Colors.ENDC}Division by zero is not allowed.")
 
                     # Perform the operation
                     result = operation(left_operand, right_operand)
@@ -281,3 +282,7 @@ class Calculator:
             print(f"{e}")
         except OverflowError as e:
             print(f"\n{Colors.WARNING}Number is too big for the calculator to handle!{Colors.ENDC}")
+        except ZeroDivisionError as e:
+            print(f"{e}")
+        except MemoryError:
+            print(f"\n{Colors.WARNING}Calculation exceeds available memory. Please simplify your expression.{Colors.ENDC}")
