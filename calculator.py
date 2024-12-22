@@ -343,6 +343,7 @@ class Calculator:
                 # Add to history only if calculation is successful
                 expression_str = " ".join(map(str, self._expression))
                 history_utils.add_to_history(Calculator.expression_history, expression_str, result)
+                return result
         except InvalidExpressionException as e:
             print(f"{e}")
         except ValueError as e:
