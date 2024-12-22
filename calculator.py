@@ -6,6 +6,7 @@ import preprocessor_utils
 import tokenization_utils
 import validation_utils
 import postfix_evaluation_utils
+from colors import Colors
 
 
 class Calculator:
@@ -35,11 +36,11 @@ class Calculator:
             if not expression:
                 # Empty expression
                 self._expression = None
-                print("\033[91m\033[1mEmpty Expression.\033[0m")
+                print(f"{Colors.WARNING}\033[1mEmpty Expression.{Colors.ENDC}")
             else:
                 self._expression = expression
         except InvalidCharacterException as e:
-            print(f"{e} \n\033[92mValid Characters:\033[0m numbers (Integer and decimal), brackets () and operators: "
+            print(f"{e} \n{Colors.GREEN}Valid Characters:{Colors.ENDC} numbers (Integer and decimal), brackets () and operators: "
                   f"{list(Operator.get_operators_keys())}")
             self._expression = ""
             # Prints the valid characters explanation in green
@@ -89,7 +90,7 @@ class Calculator:
                 token_list.append(float(current_token))
             self._expression = token_list
         except InvalidDecimalPointException as e:
-            print(f"{e} \n\033[92mValid Placement of Decimal Point: \033[0m(0).123, 1.23, 123.(0)")
+            print(f"{e} \n{Colors.GREEN}Valid Placement of Decimal Point: {Colors.ENDC}(0).123, 1.23, 123.(0)")
             self._expression = None  # Expression is not valid
 
     def validation(self):
@@ -113,33 +114,39 @@ class Calculator:
         # 1. Check for balanced parentheses
         check_passed, error_expression = validation_utils.parentheses_check(self._expression)
         if not check_passed:
-            error_message += f"\n{error_expression}\nParentheses are not balanced."
+            error_message += (f"\n\n{error_expression}\n{Colors.FAIL}Invalid Expression: {Colors.ENDC}"
+                              f"Parentheses are not balanced.")
 
         # 2. Check for empty parentheses
         check_passed, error_expression = validation_utils.empty_parentheses_check(self._expression)
         if not check_passed:
-            error_message += f"\n{error_expression}\nEmpty parentheses are not allowed."
+            error_message += (f"\n\n{error_expression}\n{Colors.FAIL}Invalid Expression: {Colors.ENDC}"
+                              f"Empty parentheses are not allowed.")
 
         # 3. Check binary operator placement
         check_passed, error_expression = validation_utils.binary_operators_between_valid_operands_check(
             self._expression)
         if not check_passed:
-            error_message += f"\n{error_expression}\nBinary operators should be between two operands or expressions."
+            error_message += (f"\n\n{error_expression}\n{Colors.FAIL}Invalid Expression: {Colors.ENDC}"
+                              f"Binary operators should be between two operands or expressions.")
 
         # 4. Check negation operator placement
         check_passed, error_expression = validation_utils.negation_operator_next_to_number_check(self._expression)
         if not check_passed:
-            error_message += f"\n{error_expression}\nNegation operator (~) should be next to a number on its right."
+            error_message += (f"\n\n{error_expression}\n{Colors.FAIL}Invalid Expression: {Colors.ENDC}"
+                              f"Negation operator (~) should only be next to a number.")
 
         # 5. Check for stand-alone unary operators
         check_passed, error_expression = validation_utils.stand_alone_unary_operators_check(self._expression)
         if not check_passed:
-            error_message += f"\n{error_expression}\nUnary operators cannot be stand-alone."
+            error_message += (f"\n\n{error_expression}\n{Colors.FAIL}Invalid Expression: {Colors.ENDC}"
+                              f"Unary operators cannot be stand-alone.")
 
         # 6. Check for missing operators between operands
         check_passed, error_expression = validation_utils.missing_operator_check(self._expression)
         if not check_passed:
-            error_message += f"\n{error_expression}\nThere are some missing operators."
+            error_message += (f"\n\n{error_expression}\n{Colors.FAIL}Invalid Expression: {Colors.ENDC}"
+                              f"There are some missing operators.")
 
         if error_message:
             self._expression = None
