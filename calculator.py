@@ -1,12 +1,11 @@
 from invalid_character_exception import InvalidCharacterException
 from invalid_decimal_point_exception import InvalidDecimalPointException
+from invalid_expression_exception import InvalidExpressionException
 from operators import Operator
 import preprocessor_utils
 import tokenization_utils
 import validation_utils
 import postfix_evaluation_utils
-from unary_operator import UnaryOperator
-from binary_operator import BinaryOperator
 
 
 class Calculator:
@@ -142,13 +141,10 @@ class Calculator:
         if not check_passed:
             error_message += f"\n{error_expression}\nThere are some missing operators."
 
-        # Return errors if any were found
-        # TODO LATER: Add a raise for InvalidExpressionException
         if error_message:
             self._expression = None
-            return error_message
-        else:
-            return self._expression
+            raise InvalidExpressionException(f"\n{error_message}")
+
 
     def infix_to_postfix(self):
         """
@@ -249,13 +245,18 @@ class Calculator:
         return stack[0][0]  # Return only the result
 
     def calculate(self):
-        Calculator.preprocessor(self)
-        if self._expression is not None:
-            Calculator.tokenization(self)
-        if self._expression is not None:
-            Calculator.validation(self)
-        if self._expression is not None:
-            Calculator.infix_to_postfix(self)
-        if self._expression is not None:
-            print(f"Result: {Calculator.evaluate_postfix(self)}")
+        try:
+            Calculator.preprocessor(self)
+            if self._expression is not None:
+                Calculator.tokenization(self)
+            if self._expression is not None:
+                Calculator.validation(self)
+            if self._expression is not None:
+                Calculator.infix_to_postfix(self)
+            if self._expression is not None:
+                print(f"Result: {Calculator.evaluate_postfix(self)}")
+        except InvalidExpressionException as e:
+            print(f"{e}")
+        except ValueError as e:
+            print(f"{e}")
 
