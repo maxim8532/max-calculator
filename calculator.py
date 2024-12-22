@@ -135,7 +135,7 @@ class Calculator:
             error_message += f"\n{error_expression}\nUnary operators cannot be stand-alone."
 
         # 6. Check for missing operators between operands
-        check_passed, error_expression = validation_utils.stand_alone_unary_operators_check(self._expression)
+        check_passed, error_expression = validation_utils.missing_operator_check(self._expression)
         if not check_passed:
             error_message += f"\n{error_expression}\nThere are some missing operators."
 
